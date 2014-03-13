@@ -1,0 +1,80 @@
+.imageSize {
+  visibility: show;
+  height: 180px;
+  border: 1px solid red;
+}
+
+.canvas {
+  border:1px solid #d3d3d3;
+  margin-right:10px;
+  margin-bottom:20px; 
+}
+
+#layout {
+  position: absolute;
+  width: 1700px;
+  height: 1200px;
+  left: 10px;
+  top: 10px;
+  border: 1px solid black;
+}
+
+#affects {
+  position: absolute;
+  width: 200px;
+  height: 35px;
+  left: 0px;
+  top: 0px;
+  border: 1px solid black;
+}
+
+#images {
+  position: absolute;
+  width: 200px;
+  height: 35px;
+  left: 0px;
+  top: 37px;
+  border: 1px solid black;
+}
+
+#calculationTime {
+  position: absolute;
+  width: 200px;
+  height: 100px;
+  left: 0px;
+  top: 100px;
+  border: 1px solid black;
+}
+
+#image {
+  position: absolute;
+  left: 204px;
+  top: 0px;
+}
+
+#composite {
+  position: absolute;
+  left: 690px;
+  top: 0px;
+}
+
+#maskErSize {
+  position: absolute;
+  left: 1176px;
+  top: 0px;
+}
+
+.canvasSize {
+  width: 480px;
+  height: 360px;
+  border: 1px solid black;
+}
+
+#displayImages {
+  position: absolute;
+  width: 800px;
+  height: 400px;
+  left: 204px;
+  top: 364px;
+  border: 1px solid black;
+}

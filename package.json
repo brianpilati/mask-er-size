@@ -1,0 +1,11 @@
+{
+  "name": "mask-er-size",
+  "description": "A javascript library to determine the actual size or mask of an image",
+  "repository": "https://github.com/brianpilati/mask-er-size",
+  "devDependencies": {
+      "karma" : "~0.10",
+      "jasmine-jquery" : "1.3.3",
+      "karma-html2js-preprocessor" : "~0.1.0",
+      "underscore" : "~1.6.0"
+  }
+}

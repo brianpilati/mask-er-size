@@ -1,8 +1,10 @@
-function MaskErSize(canvasWidth, canvasHeight) {
+function MaskErSize(canvasWidth, canvasHeight, xScale, yScale) {
   init: {
-    this.validateUserInput(canvasWidth, canvasHeight);
+    this.validateUserInput(canvasWidth, canvasHeight, xScale, yScale);
     this.canvasWidth = canvasWidth || 480;
     this.canvasHeight = canvasHeight || 360;
+    this.xScale = xScale || 1;
+    this.yScale = yScale || 1;
 
     this.initializeVariables();
   }
@@ -26,22 +28,13 @@ MaskErSize.prototype = {
       var rightSide = (this.canvasWidth*4)-4;
       for(var i=0; i< aData.length; i+=4) {
         if(aData[i+3] > 0) { 
-          if (topY == undefined) {
-            this.__setImageRect('top', y);
-            topY = y;
-          }
+          if (topY == undefined) { this.__setImageRect('top', y); topY = y;}
+
+          if ( y > this.__getBottom() ) this.__setImageRect('bottom', y);
 
           if ( x < this.__getLeft() ) this.__setImageRect('left', x);
 
-          if (x>rightX) {
-            this.__setImageRect('right', x);
-            rightX = x;
-          }
-
-          if (y>bottomY) {
-            this.__setImageRect('bottom', y);
-            bottomY = y;
-          }
+          if ( x > this.__getRight() ) this.__setImageRect('right', x);
 
 
           aData[i] = 0;
@@ -71,24 +64,53 @@ MaskErSize.prototype = {
       ctx.putImageData(aDataObj, 0, 0);
 
       //DrawLine
-      ctx.globalCompositeOperation='destination-over';
-      ctx.scale(1,1);
-      ctx.moveTo(0,this.getImageRect().top);
-      ctx.lineTo(this.canvasWidth,this.getImageRect().top);
-      ctx.stroke();
+      this.__drawDebugLines(ctx);
+  },
 
-      ctx.moveTo(0,this.getImageRect().bottom);
-      ctx.lineTo(this.canvasWidth, this.getImageRect().bottom);
-      ctx.stroke();
+  __setCTXScale: function(ctx) {
+    ctx.scale(this.__getXScale(), this.__getYScale());
+  },
 
+  __getXScale: function() {
+    return this.xScale;
+  },
 
-      ctx.moveTo(this.getImageRect().right,0);
-      ctx.lineTo(this.getImageRect().right,this.canvasHeight);
-      ctx.stroke();
+  __getYScale: function() {
+    return this.yScale;
+  },
 
-      ctx.moveTo(this.getImageRect().left,0);
-      ctx.lineTo(this.getImageRect().left,this.canvasHeight);
-      ctx.stroke();
+  __drawDebugLines: function(ctx) {
+    ctx.globalCompositeOperation='destination-over';
+    this.__setCTXScale(ctx);
+
+    this.__drawTopDebugLine(ctx);
+    this.__drawBottomDebugLine(ctx);
+    this.__drawLeftDebugLine(ctx);
+    this.__drawRightDebugLine(ctx);
+  },
+
+  __drawTopDebugLine: function(ctx) {
+    ctx.moveTo(0,this.getImageRect().top);
+    ctx.lineTo(this.canvasWidth,this.getImageRect().top);
+    ctx.stroke();
+  },
+
+  __drawBottomDebugLine: function(ctx) {
+    ctx.moveTo(0,this.getImageRect().bottom);
+    ctx.lineTo(this.canvasWidth, this.getImageRect().bottom);
+    ctx.stroke();
+  },
+
+  __drawLeftDebugLine: function(ctx) {
+    ctx.moveTo(this.getImageRect().left,0);
+    ctx.lineTo(this.getImageRect().left,this.canvasHeight);
+    ctx.stroke();
+  },
+
+  __drawRightDebugLine: function(ctx) {
+    ctx.moveTo(this.getImageRect().right,0);
+    ctx.lineTo(this.getImageRect().right,this.canvasHeight);
+    ctx.stroke();
   },
 
   __setImageRect: function(key, value) {
@@ -97,25 +119,31 @@ MaskErSize.prototype = {
 
   __getLeft: function() { return this.getImageRect().left},
 
+  __getRight: function() { return this.getImageRect().right},
+
+  __getTop: function() { return this.getImageRect().top},
+
+  __getBottom: function() { return this.getImageRect().bottom},
+
   getImageRect: function() {
     return this.imageRect;
   },
 
-  validateUserInput: function(canvasWidth, canvasHeight) {
-    if (canvasWidth && canvasWidth < 1) {
-      throw new Error("Canvas Width must be larger than 0");
+  validateUserInput: function(canvasWidth, canvasHeight, xScale, yScale) {
+    if ((canvasWidth || canvasWidth === 0)  && (canvasWidth > 500 || canvasWidth < 1)) {
+      throw new Error("Canvas Width must be between 1 and 500");
     }
 
-    if (canvasHeight && canvasHeight < 1) {
-      throw new Error("Canvas Height must be larger than 0");
+    if ((canvasHeight || canvasHeight === 0) && (canvasHeight > 500 || canvasHeight < 1)) {
+      throw new Error("Canvas Height must be between 1 and 500");
     }
 
-    if (canvasHeight && canvasHeight > 500) {
-      throw new Error("Canvas Height can be no larger than 500");
+    if ((xScale || xScale === 0) && (xScale > 10 || xScale < .1)) {
+      throw new Error("X Scale must be between .1 and 10");
     }
 
-    if (canvasWidth && canvasWidth > 500) {
-      throw new Error("Canvas Width can be no larger than 500");
+    if ((yScale || yScale === 0) && (yScale > 10 || yScale < .1)) {
+      throw new Error("Y Scale must be between .1 and 10");
     }
   },
 

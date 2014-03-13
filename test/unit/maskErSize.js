@@ -16,6 +16,31 @@ describe('MaskErSize', function() {
       it('should have a canvasHeight variable', function() {
         expect(maskErSize.canvasHeight).toBe(360);
       });
+
+      it('should have a xScale variable', function() {
+        expect(maskErSize.xScale).toBe(1);
+      });
+
+      it('should have a yScale variable', function() {
+        expect(maskErSize.yScale).toBe(1);
+      });
+    });
+
+    describe('Scale', function() {
+      it('should have a return the xScale', function() {
+        expect(maskErSize.__getXScale()).toBe(1);
+      });
+
+      it('should have a return the yScale', function() {
+        expect(maskErSize.__getYScale()).toBe(1);
+      });
+
+      it('should set the ctx scale', function() {
+        var ctx = new ctxMock();
+        spyOn(ctx, "scale");
+        maskErSize.__setCTXScale(ctx);
+        expect(ctx.scale).toHaveBeenCalledWith(1, 1);
+      });
     });
 
     describe('Image Rect', function() {
@@ -36,6 +61,18 @@ describe('MaskErSize', function() {
 
       it('should have a default image rect left', function() {
         expect(maskErSize.__getLeft()).toBe(0);
+      });
+
+      it('should have a default image rect right', function() {
+        expect(maskErSize.__getRight()).toBe(480);
+      });
+
+      it('should have a default image rect top', function() {
+        expect(maskErSize.__getTop()).toBe(0);
+      });
+
+      it('should have a default image rect bottom', function() {
+        expect(maskErSize.__getBottom()).toBe(360);
       });
 
       it('should have a default image rect right', function() {
@@ -76,21 +113,62 @@ describe('MaskErSize', function() {
   });
 
   describe('User Defined variables', function() {
-    it('should have a canvasWidth constraint', function() {
-      expect(function() { new MaskErSize(600,400); }).toThrow(Error("Canvas Width can be no larger than 500"));
+    var widthError, heightError, xScaleError, yScaleError;
+    beforeEach(function() {
+      heightError = 'Canvas Height must be between 1 and 500';
+      widthError = 'Canvas Width must be between 1 and 500';
+      xScaleError = 'X Scale must be between .1 and 10';
+      yScaleError = 'Y Scale must be between .1 and 10';
     });
 
-    it('should have a canvasWidth constraint', function() {
-      expect(function() { new MaskErSize(-1,400); }).toThrow(Error("Canvas Width must be larger than 0"));
-    });
+    describe('Error Handling', function() {
+      it('should have a canvasWidth constraint', function() {
+        expect(function() { new MaskErSize(0,400); }).toThrow(Error(widthError));
+      });
 
-    it('should have a canvasHeight constraint', function() {
-      expect(function() { new MaskErSize(400,600); }).toThrow(Error("Canvas Height can be no larger than 500"));
-    });
+      it('should have a canvasWidth constraint', function() {
+        expect(function() { new MaskErSize(600,400); }).toThrow(Error(widthError));
+      });
 
-    it('should have a canvasHeight constraint', function() {
-      expect(function() { new MaskErSize(400,-1); }).toThrow(Error("Canvas Height must be larger than 0"));
-    });
+      it('should have a canvasWidth constraint', function() {
+        expect(function() { new MaskErSize(-1,400); }).toThrow(Error(widthError));
+      });
 
+      it('should have a canvasHeight constraint', function() {
+        expect(function() { new MaskErSize(400,0); }).toThrow(Error(heightError));
+      });
+
+      it('should have a canvasHeight constraint', function() {
+        expect(function() { new MaskErSize(400,600); }).toThrow(Error(heightError));
+      });
+
+      it('should have a canvasHeight constraint', function() {
+        expect(function() { new MaskErSize(400,-1); }).toThrow(Error(heightError));
+      });
+
+      it('should have a xScale constraint', function() {
+        expect(function() { new MaskErSize(400,400, 0, 1); }).toThrow(Error(xScaleError));
+      });
+
+      it('should have a xScale constraint', function() {
+        expect(function() { new MaskErSize(400,400, 11, 1); }).toThrow(Error(xScaleError));
+      });
+
+      it('should have a xScale constraint', function() {
+        expect(function() { new MaskErSize(400,400, .05, 1); }).toThrow(Error(xScaleError));
+      });
+
+      it('should have a yScale constraint', function() {
+        expect(function() { new MaskErSize(400,400, 1, 0); }).toThrow(Error(yScaleError));
+      });
+
+      it('should have a yScale constraint', function() {
+        expect(function() { new MaskErSize(400,400, 1, 11); }).toThrow(Error(yScaleError));
+      });
+
+      it('should have a yScale constraint', function() {
+        expect(function() { new MaskErSize(400,400, 1, .05); }).toThrow(Error(yScaleError));
+      });
+    });
   });
 });

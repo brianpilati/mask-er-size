@@ -18,53 +18,48 @@ MaskErSize.prototype = {
   gcoTransform : function(ctx) {
     var aDataObj = ctx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
     var aData = aDataObj.data;
-    var topY = undefined;
-    var rightX = 0;
-    var leftX = this.canvasWidth; 
-    var bottomY = 0; 
+    var top = undefined;
+    var right = 0;
+    var left = this.canvasWidth; 
+    var bottom = 0; 
     var y = 0;
     var x = 0;
-      var leftSide = (this.canvasWidth*4);
-      var rightSide = (this.canvasWidth*4)-4;
-      for(var i=0; i< aData.length; i+=4) {
-        if(aData[i+3] > 0) { 
-          if (topY == undefined) { this.__setImageRect('top', y); topY = y;}
+    var leftSide = (this.canvasWidth*4);
+    for(var i=0; i< aData.length; i+=4) {
+      if(aData[i+3] > 0) { 
+        if (top == undefined) { top = y;}
+        if ( y > bottom ) bottom = y;
+        if ( x < left ) left = x;
+        if ( x > right ) right = x;
 
-          if ( y > this.__getBottom() ) this.__setImageRect('bottom', y);
-
-          if ( x < this.__getLeft() ) this.__setImageRect('left', x);
-
-          if ( x > this.__getRight() ) this.__setImageRect('right', x);
-
-
-          aData[i] = 0;
-          aData[i+1] = 0;
-          aData[i+2] = 0;
-          aData[i+3] = 255;
-
-
-
-        } else {
-          aData[i] = 255;
-          aData[i+1] = 255;
-          aData[i+2] = 255;
-          aData[i+3] = aData[i+3];
-        }
-
-        if (i % leftSide === 0) {
-          y++;
-          x=0;
-        }
-
-        x++;
-
+        aData[i] = 0;
+        aData[i+1] = 0;
+        aData[i+2] = 0;
+        aData[i+3] = 255;
+      } else {
+        aData[i] = 255;
+        aData[i+1] = 255;
+        aData[i+2] = 255;
+        aData[i+3] = aData[i+3];
       }
 
-      aDataObj.data = aData;
-      ctx.putImageData(aDataObj, 0, 0);
+      if (i % leftSide === 0) {
+        y++;
+        x=0;
+      }
+      x++;
+    }
 
-      //DrawLine
-      this.__drawDebugLines(ctx);
+    this.__setImageRect('top', top);
+    this.__setImageRect('bottom', bottom);
+    this.__setImageRect('left', left);
+    this.__setImageRect('right', right);
+
+    aDataObj.data = aData;
+    ctx.putImageData(aDataObj, 0, 0);
+
+    //DrawLine
+    this.__drawDebugLines(ctx);
   },
 
   __setCTXScale: function(ctx) {
@@ -114,16 +109,17 @@ MaskErSize.prototype = {
   },
 
   __setImageRect: function(key, value) {
+    console.log(key, value);
     if (key in this.imageRect) this.imageRect[key] = value;
   },
 
-  __getLeft: function() { return this.getImageRect().left},
+  __getLeft: function() { return this.getImageRect().left; },
 
-  __getRight: function() { return this.getImageRect().right},
+  __getRight: function() { return this.getImageRect().right; },
 
-  __getTop: function() { return this.getImageRect().top},
+  __getTop: function() { return this.getImageRect().top; },
 
-  __getBottom: function() { return this.getImageRect().bottom},
+  __getBottom: function() { return this.getImageRect().bottom; },
 
   getImageRect: function() {
     return this.imageRect;

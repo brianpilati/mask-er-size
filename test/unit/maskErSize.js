@@ -23,6 +23,14 @@ describe('MaskErSize', function() {
       it('should have a yScale variable', function() {
         expect(maskErSize.yScale).toBe(1);
       });
+
+      it('should have a topArray variable', function() {
+        expect(maskErSize.__topArray.length).toBe(480);
+      });
+
+      it('should have a bottomArray variable', function() {
+        expect(maskErSize.__bottomArray.length).toBe(480);
+      });
     });
 
     describe('Timer', function() {
@@ -142,6 +150,14 @@ describe('MaskErSize', function() {
         expect(maskErSize.__createCanvas).toHaveBeenCalled();
       });
     });
+
+    describe('Create Initialized Array', function() {
+      it('should return an array of canvas width ', function() {
+        var newArray = maskErSize.__createInitializedArray();
+        expect(newArray.length).toBe(480);
+        expect(newArray[240]).toBe(-1);
+      });
+    });
   });
 
   describe('User Defined variables', function() {
@@ -204,41 +220,43 @@ describe('MaskErSize', function() {
     });
 
     describe('MaskErSize Object', function() {
-      var maskErSizeObj;
+      var customMaskErSize, maskErSizeObj;
       beforeEach(function() {
+        customMaskErSize = new MaskErSize(7,11);
         setFixtures('<img id="image" src="/img/asteroid.png">');
         var element = $('#image')[0];
         var ctx = new ctxMock;
-        spyOn(maskErSize, "__createCGOEffect").andReturn(ctx);
-        maskErSizeObj = maskErSize.erIt(element);
+        spyOn(customMaskErSize, "__createCGOEffect").andReturn(ctx);
+        spyOn(customMaskErSize, "__drawDebugLines");
+        maskErSizeObj = customMaskErSize.erIt(element);
       });
 
       it('should have a rect object with a top attribute', function() {
-        expect(maskErSizeObj.rect.top).toBe(0);
+        expect(maskErSizeObj.rect.top).toBe(1);
       });
 
       it('should have a rect object with a bottom attribute', function() {
-        expect(maskErSizeObj.rect.bottom).toBe(360);
+        expect(maskErSizeObj.rect.bottom).toBe(9);
       });
 
       it('should have a rect object with a left attribute', function() {
-        expect(maskErSizeObj.rect.left).toBe(0);
+        expect(maskErSizeObj.rect.left).toBe(7);
       });
 
       it('should have a rect object with a right attribute', function() {
-        expect(maskErSizeObj.rect.right).toBe(480);
+        expect(maskErSizeObj.rect.right).toBe(0);
       });
 
       it('should have a width attribute', function() {
-        expect(maskErSizeObj.width).toBe(480);
+        expect(maskErSizeObj.width).toBe(-7);
       });
 
       it('should have a height attribute', function() {
-        expect(maskErSizeObj.height).toBe(360);
+        expect(maskErSizeObj.height).toBe(8);
       });
 
       it('should have an elapsedTime attribute', function() {
-        expect(maskErSizeObj.elapsedTime).toBe(0);
+        expect(maskErSizeObj.elapsedTime >= 0).toBe(true);
       });
     });
   });

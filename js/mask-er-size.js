@@ -17,39 +17,48 @@ MaskErSize.prototype = {
   erIt: function(imageElement) {
     ctx = this.__createCGOEffect(imageElement);
     this.__startTime = new Date();
-    var aDataObj = ctx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
-    var aData = aDataObj.data;
-    /*
-    var top = undefined;
-    var right = 0;
-    var left = this.canvasWidth; 
-    var bottom = 0; 
-    var y = 0;
-    var x = 0;
-    var leftSide = (this.canvasWidth*4);
-    for(var i=0; i< aData.length; i+=4) {
-      if(aData[i+3] > 0) { 
-        if (top == undefined) { top = y;}
-        if ( y > bottom ) bottom = y;
-        if ( x < left ) left = x;
-        if ( x > right ) right = x;
+    var imageMapObject = ctx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
+    var imageMap = imageMapObject.data;
 
-        aData[i] = 0;
-        aData[i+1] = 0;
-        aData[i+2] = 0;
-        aData[i+3] = 255;
-      } else {
-        aData[i] = 255;
-        aData[i+1] = 255;
-        aData[i+2] = 255;
-        aData[i+3] = aData[i+3];
+    var top = bottom = undefined;
+    var right = y = x = 0;
+    var left = this.canvasWidth; 
+
+
+    var leftSide = this.canvasWidth * 4;
+    var totalPixels = imageMap.length - 1;
+    var topEndPixel = imageMap.length/2;
+    var bottomStartPixel = topEndPixel + 4;
+    /*
+      calculate the top
+    */
+    for(var i=0; i< topEndPixel; i+=4) {
+      if(imageMap[i+3] > 0) { 
+        if (top == undefined) top = y;
+        if (this.__topArray[x] === -1) this.__topArray[x] = y;
       }
 
-      if (i % leftSide === 0) {
+      if (i % leftSide == 0 && i) {
         y++;
         x=0;
       }
       x++;
+    }
+
+    x = this.canvasWidth;
+    y = this.canvasHeight;
+
+    for(var i=totalPixels; i > bottomStartPixel; i-=4) {
+      if(imageMap[i] > 0) { 
+        if (bottom == undefined) bottom = y;
+        if (this.__bottomArray[x] === -1) this.__bottomArray[x] = y;
+      }
+
+      if (i % leftSide == 3) {
+        y--;
+        x = this.canvasWidth;
+      }
+      x--;
     }
 
     this.__setImageRect('top', top);
@@ -57,15 +66,20 @@ MaskErSize.prototype = {
     this.__setImageRect('left', left);
     this.__setImageRect('right', right);
 
-    aDataObj.data = aData;
-    ctx.putImageData(aDataObj, 0, 0);
+    /*
+      imageMapObject.data = imageMap;
+      ctx.putImageData(imageMapObject, 0, 0);
+    */
 
     //DrawLine
     this.__drawDebugLines(ctx);
 
-    */
     this.__endTime = new Date();
     return this.__getMaskErSizeObject();
+  },
+
+  __createInitializedArray: function() {
+    return Array.apply(null, new Array(this.canvasWidth)).map(Number.prototype.valueOf,-1);
   },
 
   __createCGOEffect : function(imageElement) {
@@ -248,6 +262,8 @@ MaskErSize.prototype = {
   initializeVariables: function() {
     this.__startTime = null;
     this.__endTime = null;
+    this.__topArray = this.__createInitializedArray();
+    this.__bottomArray  = this.__createInitializedArray();
     this.imageRect = {
       top : 0,
       bottom : this.canvasHeight,

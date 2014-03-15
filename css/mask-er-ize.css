@@ -1,3 +1,10 @@
+#mask-er-size {
+  position: absolute;
+  top: 375px;
+  left: 1020px;
+  border: 1px solid red;
+}
+
 .imageSize {
   visibility: show;
   height: 180px;
@@ -37,13 +44,19 @@
   border: 1px solid black;
 }
 
-#calculationTime {
+#results {
   position: absolute;
   width: 200px;
-  height: 100px;
+  height: 800px;
   left: 0px;
   top: 100px;
   border: 1px solid black;
+}
+
+.result {
+  padding: 2px;
+  margin 2px;
+  border-bottom: 1px solid black;
 }
 
 #image {

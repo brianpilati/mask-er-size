@@ -7,7 +7,8 @@ module.exports = function(config){
       'test/unit/**/*.js',
       'js/**/*.js',
       'node_modules/jasmine-jquery/lib/jasmine-jquery.js',
-      'node_modules/underscore/underscore.js'
+      'node_modules/underscore/underscore.js',
+      {pattern: 'img/asteroid.png', included: false, served: true},
     ],
 
     exclude : [

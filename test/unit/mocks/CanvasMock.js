@@ -1,6 +1,6 @@
 'use strict';
 
-var ctxMock = function() {
+var canvasMock = function() {
   var args = createArgs(arguments);
 
   function getArgs(argKey) {
@@ -20,10 +20,6 @@ var ctxMock = function() {
   }
 
   return {
-    'scale' : function() { return getArgs('scale'); },
-    'fillStyle' : undefined,
-    'fillRect' : function(a,b,c,d) { return getArgs('fillRect'); },
-    'drawImage' : function(a,b,c) { return getArgs('drawImage'); },
-    'getImageData' : function(a,b,c,d) { return new getImageData() }
+    'getContext' : function(dimension) { return new ctxMock(); }
   }
 };

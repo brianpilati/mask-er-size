@@ -11,7 +11,28 @@ DemoUtil.prototype = {
     this.createGCOEffect($('#affectsSelect').val(), $('#imagesSelect').val(), 'composite');
     var ctx = this.createGCOEffect('source-in', $('#imagesSelect').val(), 'maskErSize');
     var maskErSize = new MaskErSize();
-    maskErSize.gcoTransform(ctx);
+    this.updateResults(maskErSize.demoMode(ctx));
+    maskErSize.erIt($('#image_1'));
+  },
+
+  'updateResults' : function(results) {
+    var resultsElem = $('#results');
+    resultsElem.html('');
+
+    resultsObj = {
+      'Elasped Time' : results.elapsedTime + ' ms',
+      'Top' : results.rect.top,
+      'Bottom' : results.rect.bottom,
+      'Left' : results.rect.left,
+      'Right' : results.rect.right,
+      'Height' : results.height,
+      'Width' : results.width,
+    };
+
+    _.each(resultsObj, function(value, key) {
+      resultsElem.append('<div class="result">' + key + ': ' + value + '</div>');
+
+    });
   },
 
   'addImageToCanvas' : function(imageId, element) {

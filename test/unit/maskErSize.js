@@ -1,13 +1,12 @@
 /* jasmine specs for MaskErSize.js go here */
 
 describe('MaskErSize', function() {
+  var maskErSize;
+  beforeEach(function() {
+    maskErSize = new MaskErSize();
+  });
 
   describe('Standard MaskErSize', function() {
-      var maskErSize;
-    beforeEach(function() {
-      maskErSize = new MaskErSize();
-    });
-
     describe('Initialized variables', function() {
       it('should have a canvasWidth variable', function() {
         expect(maskErSize.canvasWidth).toBe(480);
@@ -23,6 +22,16 @@ describe('MaskErSize', function() {
 
       it('should have a yScale variable', function() {
         expect(maskErSize.yScale).toBe(1);
+      });
+    });
+
+    describe('Timer', function() {
+      it('should have a startTime', function() {
+        expect(maskErSize.__startTime).toBe(null);
+      });
+
+      it('should have a endTime', function() {
+        expect(maskErSize.__endTime).toBe(null);
       });
     });
 
@@ -45,17 +54,17 @@ describe('MaskErSize', function() {
 
     describe('Image Rect', function() {
       it('should have a default image rect top', function() {
-        var imageRect = maskErSize.getImageRect();
+        var imageRect = maskErSize.__getImageRect();
         expect(imageRect.top).toBe(0);
       });
 
       it('should have a default image rect bottom', function() {
-        var imageRect = maskErSize.getImageRect();
+        var imageRect = maskErSize.__getImageRect();
         expect(imageRect.bottom).toBe(360);
       });
 
       it('should have a default image rect left', function() {
-        var imageRect = maskErSize.getImageRect();
+        var imageRect = maskErSize.__getImageRect();
         expect(imageRect.left).toBe(0);
       });
 
@@ -76,38 +85,61 @@ describe('MaskErSize', function() {
       });
 
       it('should have a default image rect right', function() {
-        var imageRect = maskErSize.getImageRect();
+        var imageRect = maskErSize.__getImageRect();
         expect(imageRect.right).toBe(480);
       });
 
       it('should set an image rect top attribute', function() {
         maskErSize.__setImageRect('top', 200);
-        var imageRect = maskErSize.getImageRect();
+        var imageRect = maskErSize.__getImageRect();
         expect(imageRect.top).toBe(200);
       });
 
       it('should set an image rect bottom attribute', function() {
         maskErSize.__setImageRect('bottom', 300);
-        var imageRect = maskErSize.getImageRect();
+        var imageRect = maskErSize.__getImageRect();
         expect(imageRect.bottom).toBe(300);
       });
 
       it('should set an image rect left attribute', function() {
         maskErSize.__setImageRect('left', 400);
-        var imageRect = maskErSize.getImageRect();
+        var imageRect = maskErSize.__getImageRect();
         expect(imageRect.left).toBe(400);
       });
 
       it('should set an image rect right attribute', function() {
         maskErSize.__setImageRect('right', 500);
-        var imageRect = maskErSize.getImageRect();
+        var imageRect = maskErSize.__getImageRect();
         expect(imageRect.right).toBe(500);
       });
 
       it('should not set a wrong image rect attribute', function() {
         maskErSize.__setImageRect('brian', 500);
-        var imageRect = maskErSize.getImageRect();
+        var imageRect = maskErSize.__getImageRect();
         expect(imageRect.brian).toBe(undefined);
+      });
+    });
+
+    describe('Create Canvas', function() {
+      it('should return a canvas.getContext', function() {
+        spyOn(document, "createElement").andReturn(new canvasMock());
+        maskErSize.__createCanvas();
+        expect(document.createElement).toHaveBeenCalledWith("canvas");
+      });
+    });
+
+    describe('Create CanvasCGOEffect', function() {
+      var element;
+      beforeEach(function() {
+        setFixtures('<img id="image" src="/img/asteroid.png">');
+        element = $('#image')[0];
+      });
+
+      it('should return a ctx object', function() {
+        var ctx = new ctxMock;
+        spyOn(maskErSize, "__createCanvas").andReturn(ctx);
+        expect(maskErSize.__createCGOEffect(element)).toEqual(ctx);
+        expect(maskErSize.__createCanvas).toHaveBeenCalled();
       });
     });
   });
@@ -168,6 +200,45 @@ describe('MaskErSize', function() {
 
       it('should have a yScale constraint', function() {
         expect(function() { new MaskErSize(400,400, 1, .05); }).toThrow(Error(yScaleError));
+      });
+    });
+
+    describe('MaskErSize Object', function() {
+      var maskErSizeObj;
+      beforeEach(function() {
+        setFixtures('<img id="image" src="/img/asteroid.png">');
+        var element = $('#image')[0];
+        var ctx = new ctxMock;
+        spyOn(maskErSize, "__createCGOEffect").andReturn(ctx);
+        maskErSizeObj = maskErSize.erIt(element);
+      });
+
+      it('should have a rect object with a top attribute', function() {
+        expect(maskErSizeObj.rect.top).toBe(0);
+      });
+
+      it('should have a rect object with a bottom attribute', function() {
+        expect(maskErSizeObj.rect.bottom).toBe(360);
+      });
+
+      it('should have a rect object with a left attribute', function() {
+        expect(maskErSizeObj.rect.left).toBe(0);
+      });
+
+      it('should have a rect object with a right attribute', function() {
+        expect(maskErSizeObj.rect.right).toBe(480);
+      });
+
+      it('should have a width attribute', function() {
+        expect(maskErSizeObj.width).toBe(480);
+      });
+
+      it('should have a height attribute', function() {
+        expect(maskErSizeObj.height).toBe(360);
+      });
+
+      it('should have an elapsedTime attribute', function() {
+        expect(maskErSizeObj.elapsedTime).toBe(0);
       });
     });
   });

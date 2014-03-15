@@ -12,7 +12,9 @@ DemoUtil.prototype = {
     var ctx = this.createGCOEffect('source-in', $('#imagesSelect').val(), 'maskErSize');
     var maskErSize = new MaskErSize();
     this.updateResults(maskErSize.demoMode(ctx));
-    maskErSize.erIt($('#image_1'));
+    console.log($('#imagesSelect').val());
+    maskErSize.erIt($('#' + ($('#imagesSelect').val())));
+    maskErSize.displayHandles();
   },
 
   'updateResults' : function(results) {

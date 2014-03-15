@@ -24,7 +24,6 @@ MaskErSize.prototype = {
     var right = y = x = 0;
     var left = this.canvasWidth; 
 
-
     var leftSide = this.canvasWidth * 4;
     var totalPixels = imageMap.length - 1;
     var topEndPixel = imageMap.length/2;
@@ -36,6 +35,8 @@ MaskErSize.prototype = {
       if(imageMap[i+3] > 0) { 
         if (top == undefined) top = y;
         if (this.__topArray[x] === -1) this.__topArray[x] = y;
+        if (x < left) { left = x;}
+        if (x > right) { right = x;}
       }
 
       if (i % leftSide == 0 && i) {
@@ -52,6 +53,8 @@ MaskErSize.prototype = {
       if(imageMap[i] > 0) { 
         if (bottom == undefined) bottom = y;
         if (this.__bottomArray[x] === -1) this.__bottomArray[x] = y;
+        if (x < left) { left = x;}
+        if (x > right) { right = x;}
       }
 
       if (i % leftSide == 3) {
@@ -69,13 +72,22 @@ MaskErSize.prototype = {
     /*
       imageMapObject.data = imageMap;
       ctx.putImageData(imageMapObject, 0, 0);
-    */
 
-    //DrawLine
-    this.__drawDebugLines(ctx);
+      //DrawLine
+      this.__drawDebugLines(ctx);
+    */
 
     this.__endTime = new Date();
     return this.__getMaskErSizeObject();
+  },
+
+  displayHandles: function() {
+    var coords = this.__buildCoordinates();
+    this.__ctx.globalCompositeOperation = 'source-over';
+    this.__ctx.beginPath();
+    this.__ctx.arc(coords.leftTop.x,coords.leftTop.y,2,0,2*Math.PI);
+    this.__ctx.strokeStyle="#FF0000";
+    this.__ctx.stroke();
   },
 
   __createInitializedArray: function() {
@@ -86,17 +98,17 @@ MaskErSize.prototype = {
     var maskErSizeElem = $('<div id="mask-er-size"></div>');
     $('body').append(maskErSizeElem);
 
-    var ctx = this.__createCanvas();
+    this.__ctx = this.__createCanvas();
 
-    ctx.fillStyle="blue";
-    ctx.fillRect(0,0,this.canvasWidth,this.canvasHeight);
+    this.__ctx.fillStyle="blue";
+    this.__ctx.fillRect(0,0,this.canvasWidth,this.canvasHeight);
 
-    ctx.globalCompositeOperation = 'source-in';
+    this.__ctx.globalCompositeOperation = 'source-in';
 
-    ctx.scale(this.__getXScale(), this.__getYScale());
-    ctx.drawImage(imageElement[0], 1, 1);
+    this.__ctx.scale(this.__getXScale(), this.__getYScale());
+    this.__ctx.drawImage(imageElement[0], 0, 0);
 
-    return ctx;
+    return this.__ctx;
   },
 
   __createCanvas : function() {
@@ -113,6 +125,7 @@ MaskErSize.prototype = {
       width: this.__getWidth(),
       height: this.__getHeight(),
       elapsedTime : this.__getElapsedTime(),
+      coordinates : this.__buildCoordinates(),
     }
   },
 
@@ -190,6 +203,20 @@ MaskErSize.prototype = {
     return this.imageRect;
   },
 
+  __buildCoordinates: function() {
+    return {
+      leftTop : {x: this.__getLeft(), y:this.__getTop()},
+      leftMiddle : {x:0, y:0},
+      leftBottom : {x:0, y:0},
+      centerTop : {x:0, y:0},
+      center: {x:0, y:0},
+      centerBottom : {x:0, y:0},
+      rightTop : {x:0, y:0},
+      rightMiddle : {x:0, y:0},
+      rightBottom : {x:0, y:0},
+    }
+  },
+
   validateUserInput: function(canvasWidth, canvasHeight, xScale, yScale) {
     if ((canvasWidth || canvasWidth === 0)  && (canvasWidth > 500 || canvasWidth < 1)) {
       throw new Error("Canvas Width must be between 1 and 500");
@@ -264,11 +291,12 @@ MaskErSize.prototype = {
     this.__endTime = null;
     this.__topArray = this.__createInitializedArray();
     this.__bottomArray  = this.__createInitializedArray();
+    this.__ctx = undefined;
     this.imageRect = {
       top : 0,
       bottom : this.canvasHeight,
       left : 0,
       right : this.canvasWidth,
-    };
+    }
   }
 };

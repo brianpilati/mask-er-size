@@ -31,6 +31,10 @@ describe('MaskErSize', function() {
       it('should have a bottomArray variable', function() {
         expect(maskErSize.__bottomArray.length).toBe(480);
       });
+
+      it('should have a ctx variable', function() {
+        expect(maskErSize.__ctx).toBe(undefined);
+      });
     });
 
     describe('Timer', function() {
@@ -231,32 +235,76 @@ describe('MaskErSize', function() {
         maskErSizeObj = customMaskErSize.erIt(element);
       });
 
-      it('should have a rect object with a top attribute', function() {
-        expect(maskErSizeObj.rect.top).toBe(1);
+      describe('Rect Object', function() {
+        it('should have a rect object with a top attribute', function() {
+          expect(maskErSizeObj.rect.top).toBe(1);
+        });
+
+        it('should have a rect object with a bottom attribute', function() {
+          expect(maskErSizeObj.rect.bottom).toBe(9);
+        });
+
+        it('should have a rect object with a left attribute', function() {
+          expect(maskErSizeObj.rect.left).toBe(2);
+        });
+
+        it('should have a rect object with a right attribute', function() {
+          expect(maskErSizeObj.rect.right).toBe(5);
+        });
       });
 
-      it('should have a rect object with a bottom attribute', function() {
-        expect(maskErSizeObj.rect.bottom).toBe(9);
+      describe('Height and Width', function() {
+        it('should have a width attribute', function() {
+          expect(maskErSizeObj.width).toBe(3);
+        });
+
+        it('should have a height attribute', function() {
+          expect(maskErSizeObj.height).toBe(8);
+        });
       });
 
-      it('should have a rect object with a left attribute', function() {
-        expect(maskErSizeObj.rect.left).toBe(7);
+      describe('Timer', function() {
+        it('should have an elapsedTime attribute', function() {
+          expect(maskErSizeObj.elapsedTime >= 0).toBe(true);
+        });
       });
 
-      it('should have a rect object with a right attribute', function() {
-        expect(maskErSizeObj.rect.right).toBe(0);
-      });
+      describe('Coordinates', function() {
+        it('should have a default image coordinate leftTop', function() {
+          expect(maskErSizeObj.coordinates.leftTop).toEqual({x : 2, y : 1});
+        });
 
-      it('should have a width attribute', function() {
-        expect(maskErSizeObj.width).toBe(-7);
-      });
+        it('should have a default image coordinate leftMiddle', function() {
+          expect(maskErSizeObj.coordinates.leftMiddle).toEqual({x : 0, y : 0});
+        });
 
-      it('should have a height attribute', function() {
-        expect(maskErSizeObj.height).toBe(8);
-      });
+        it('should have a default image coordinate leftBottom', function() {
+          expect(maskErSizeObj.coordinates.leftBottom).toEqual({x : 0, y : 0});
+        });
 
-      it('should have an elapsedTime attribute', function() {
-        expect(maskErSizeObj.elapsedTime >= 0).toBe(true);
+        it('should have a default image coordinate centerTop', function() {
+          expect(maskErSizeObj.coordinates.centerTop).toEqual({x : 0, y : 0});
+        });
+
+        it('should have a default image coordinate centerMiddle', function() {
+          expect(maskErSizeObj.coordinates.center).toEqual({x : 0, y : 0});
+        });
+
+        it('should have a default image coordinate centerBottom', function() {
+          expect(maskErSizeObj.coordinates.centerBottom).toEqual({x : 0, y : 0});
+        });
+
+        it('should have a default image coordinate rightTop', function() {
+          expect(maskErSizeObj.coordinates.rightTop).toEqual({x : 0, y : 0});
+        });
+
+        it('should have a default image coordinate rightMiddle', function() {
+          expect(maskErSizeObj.coordinates.rightMiddle).toEqual({x : 0, y : 0});
+        });
+
+        it('should have a default image coordinate rightBottom', function() {
+          expect(maskErSizeObj.coordinates.rightBottom).toEqual({x : 0, y : 0});
+        });
       });
     });
   });

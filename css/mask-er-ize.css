@@ -1,13 +1,13 @@
 #mask-er-size {
   position: absolute;
-  top: 375px;
-  left: 1020px;
+  top: 10px;
+  left: 700px;
   border: 1px solid red;
 }
 
 .imageSize {
   visibility: show;
-  height: 180px;
+  height: 300px;
   border: 1px solid red;
 }
 
@@ -44,12 +44,30 @@
   border: 1px solid black;
 }
 
+#xScale {
+  position: absolute;
+  width: 200px;
+  height: 35px;
+  left: 0px;
+  top: 74px;
+  border: 1px solid black;
+}
+
+#yScale {
+  position: absolute;
+  width: 200px;
+  height: 35px;
+  left: 0px;
+  top: 111px;
+  border: 1px solid black;
+}
+
 #results {
   position: absolute;
   width: 200px;
   height: 800px;
   left: 0px;
-  top: 100px;
+  top: 160px;
   border: 1px solid black;
 }
 
@@ -65,15 +83,9 @@
   top: 0px;
 }
 
-#composite {
-  position: absolute;
-  left: 690px;
-  top: 0px;
-}
-
 #maskErSize {
   position: absolute;
-  left: 1176px;
+  left: 690px;
   top: 0px;
 }
 

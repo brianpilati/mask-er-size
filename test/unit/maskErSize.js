@@ -65,70 +65,115 @@ describe('MaskErSize', function() {
     });
 
     describe('Image Rect', function() {
-      it('should have a default image rect top', function() {
-        var imageRect = maskErSize.__getImageRect();
-        expect(imageRect.top).toBe(0);
+      describe('Getters', function() {
+        it('should have a default image rect top', function() {
+          var imageRect = maskErSize.__getImageRect();
+          expect(imageRect.top).toBe(0);
+        });
+
+        it('should have a default image rect bottom', function() {
+          var imageRect = maskErSize.__getImageRect();
+          expect(imageRect.bottom).toBe(360);
+        });
+
+        it('should have a default image rect left', function() {
+          var imageRect = maskErSize.__getImageRect();
+          expect(imageRect.left).toBe(0);
+        });
+
+        it('should have a default image rect right', function() {
+          var imageRect = maskErSize.__getImageRect();
+          expect(imageRect.right).toBe(480);
+        });
+
+        it('should have a default image rect left', function() {
+          expect(maskErSize.__getLeft()).toBe(0);
+        });
+
+        it('should have a default image rect right', function() {
+          expect(maskErSize.__getRight()).toBe(480);
+        });
+
+        it('should have a default image rect top', function() {
+          expect(maskErSize.__getTop()).toBe(0);
+        });
+
+        it('should have a default image rect bottom', function() {
+          expect(maskErSize.__getBottom()).toBe(360);
+        });
+
+        it('should have a default vertical middle', function() {
+          expect(maskErSize.__getVerticalMiddle()).toBe(180);
+        });
+
+        it('should have a default horizontal middle', function() {
+          expect(maskErSize.__getHorizontalMiddle()).toBe(240);
+        });
       });
 
-      it('should have a default image rect bottom', function() {
-        var imageRect = maskErSize.__getImageRect();
-        expect(imageRect.bottom).toBe(360);
+      describe('Setters', function() {
+        it('should set an image rect top attribute', function() {
+          maskErSize.__setImageRect('top', 200);
+          var imageRect = maskErSize.__getImageRect();
+          expect(imageRect.top).toBe(200);
+        });
+
+        it('should set an image rect bottom attribute', function() {
+          maskErSize.__setImageRect('bottom', 300);
+          var imageRect = maskErSize.__getImageRect();
+          expect(imageRect.bottom).toBe(300);
+        });
+
+        it('should set an image rect left attribute', function() {
+          maskErSize.__setImageRect('left', 400);
+          var imageRect = maskErSize.__getImageRect();
+          expect(imageRect.left).toBe(400);
+        });
+
+        it('should set an image rect right attribute', function() {
+          maskErSize.__setImageRect('right', 500);
+          var imageRect = maskErSize.__getImageRect();
+          expect(imageRect.right).toBe(500);
+        });
+
+        it('should not set a wrong image rect attribute', function() {
+          maskErSize.__setImageRect('brian', 500);
+          var imageRect = maskErSize.__getImageRect();
+          expect(imageRect.brian).toBe(undefined);
+        });
       });
 
-      it('should have a default image rect left', function() {
-        var imageRect = maskErSize.__getImageRect();
-        expect(imageRect.left).toBe(0);
-      });
+      describe('Scale', function() {
+        it('should set an image rect top attribute', function() {
+          maskErSize.xScale = 2;
+          maskErSize.__setImageRect('top', 200);
+          var imageRect = maskErSize.__getImageRect();
+          expect(imageRect.top).toBe(200);
+        });
 
-      it('should have a default image rect left', function() {
-        expect(maskErSize.__getLeft()).toBe(0);
-      });
+        it('should set an image rect bottom attribute', function() {
+          maskErSize.xScale = 2;
+          maskErSize.yScale = 4;
+          maskErSize.__setImageRect('bottom', 200);
+          var imageRect = maskErSize.__getImageRect();
+          expect(imageRect.bottom).toBe(50);
+        });
 
-      it('should have a default image rect right', function() {
-        expect(maskErSize.__getRight()).toBe(480);
-      });
+        it('should set an image rect left attribute', function() {
+          maskErSize.xScale = .5;
+          maskErSize.yScale = 3;
+          maskErSize.__setImageRect('left', 400);
+          var imageRect = maskErSize.__getImageRect();
+          expect(imageRect.left).toBe(800);
+        });
 
-      it('should have a default image rect top', function() {
-        expect(maskErSize.__getTop()).toBe(0);
-      });
-
-      it('should have a default image rect bottom', function() {
-        expect(maskErSize.__getBottom()).toBe(360);
-      });
-
-      it('should have a default image rect right', function() {
-        var imageRect = maskErSize.__getImageRect();
-        expect(imageRect.right).toBe(480);
-      });
-
-      it('should set an image rect top attribute', function() {
-        maskErSize.__setImageRect('top', 200);
-        var imageRect = maskErSize.__getImageRect();
-        expect(imageRect.top).toBe(200);
-      });
-
-      it('should set an image rect bottom attribute', function() {
-        maskErSize.__setImageRect('bottom', 300);
-        var imageRect = maskErSize.__getImageRect();
-        expect(imageRect.bottom).toBe(300);
-      });
-
-      it('should set an image rect left attribute', function() {
-        maskErSize.__setImageRect('left', 400);
-        var imageRect = maskErSize.__getImageRect();
-        expect(imageRect.left).toBe(400);
-      });
-
-      it('should set an image rect right attribute', function() {
-        maskErSize.__setImageRect('right', 500);
-        var imageRect = maskErSize.__getImageRect();
-        expect(imageRect.right).toBe(500);
-      });
-
-      it('should not set a wrong image rect attribute', function() {
-        maskErSize.__setImageRect('brian', 500);
-        var imageRect = maskErSize.__getImageRect();
-        expect(imageRect.brian).toBe(undefined);
+        it('should set an image rect right attribute', function() {
+          maskErSize.xScale = .25;
+          maskErSize.yScale = 3;
+          maskErSize.__setImageRect('right', 2000);
+          var imageRect = maskErSize.__getImageRect();
+          expect(imageRect.right).toBe(8000);
+        });
       });
     });
 
@@ -241,7 +286,7 @@ describe('MaskErSize', function() {
         });
 
         it('should have a rect object with a bottom attribute', function() {
-          expect(maskErSizeObj.rect.bottom).toBe(9);
+          expect(maskErSizeObj.rect.bottom).toBe(8);
         });
 
         it('should have a rect object with a left attribute', function() {
@@ -255,7 +300,7 @@ describe('MaskErSize', function() {
 
       describe('Height and Width', function() {
         it('should have a width attribute', function() {
-          expect(maskErSizeObj.width).toBe(3);
+          expect(maskErSizeObj.width).toBe(4);
         });
 
         it('should have a height attribute', function() {
@@ -275,35 +320,35 @@ describe('MaskErSize', function() {
         });
 
         it('should have a default image coordinate leftMiddle', function() {
-          expect(maskErSizeObj.coordinates.leftMiddle).toEqual({x : 0, y : 0});
+          expect(maskErSizeObj.coordinates.leftMiddle).toEqual({x : 2, y : 4.5});
         });
 
         it('should have a default image coordinate leftBottom', function() {
-          expect(maskErSizeObj.coordinates.leftBottom).toEqual({x : 0, y : 0});
+          expect(maskErSizeObj.coordinates.leftBottom).toEqual({x : 2, y : 8});
         });
 
         it('should have a default image coordinate centerTop', function() {
-          expect(maskErSizeObj.coordinates.centerTop).toEqual({x : 0, y : 0});
+          expect(maskErSizeObj.coordinates.centerTop).toEqual({x : 3.5, y : 1});
         });
 
         it('should have a default image coordinate centerMiddle', function() {
-          expect(maskErSizeObj.coordinates.center).toEqual({x : 0, y : 0});
+          expect(maskErSizeObj.coordinates.center).toEqual({x : 3.5, y : 4.5});
         });
 
         it('should have a default image coordinate centerBottom', function() {
-          expect(maskErSizeObj.coordinates.centerBottom).toEqual({x : 0, y : 0});
+          expect(maskErSizeObj.coordinates.centerBottom).toEqual({x : 3.5, y : 8});
         });
 
         it('should have a default image coordinate rightTop', function() {
-          expect(maskErSizeObj.coordinates.rightTop).toEqual({x : 0, y : 0});
+          expect(maskErSizeObj.coordinates.rightTop).toEqual({x : 5, y : 1});
         });
 
         it('should have a default image coordinate rightMiddle', function() {
-          expect(maskErSizeObj.coordinates.rightMiddle).toEqual({x : 0, y : 0});
+          expect(maskErSizeObj.coordinates.rightMiddle).toEqual({x : 5, y : 4.5});
         });
 
         it('should have a default image coordinate rightBottom', function() {
-          expect(maskErSizeObj.coordinates.rightBottom).toEqual({x : 0, y : 0});
+          expect(maskErSizeObj.coordinates.rightBottom).toEqual({x : 5, y : 8});
         });
       });
     });

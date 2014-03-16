@@ -20,37 +20,44 @@ MaskErSize.prototype = {
     var imageMapObject = ctx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
     var imageMap = imageMapObject.data;
 
-    var top = bottom = undefined;
-    var right = y = x = 0;
+    //var top = bottom = undefined;
+    //var right = y = x = 0;
+    var top = undefined;
+    var right = bottom = y = x = 0;
     var left = this.canvasWidth; 
 
     var leftSide = this.canvasWidth * 4;
-    var totalPixels = imageMap.length - 1;
+    //var totalPixels = imageMap.length - 1;
+    var totalPixels = imageMap.length;
     var topEndPixel = imageMap.length/2;
     var bottomStartPixel = topEndPixel + 4;
     /*
       calculate the top
     */
-    for(var i=0; i< topEndPixel; i+=4) {
+    //for(var i=0; i< topEndPixel; i+=4) {
+    for(var i=0; i< totalPixels; i+=4) {
       if(imageMap[i+3] > 0) { 
         if (top == undefined) top = y;
-        if (this.__topArray[x] === -1) this.__topArray[x] = y;
-        if (x < left) { left = x;}
-        if (x > right) { right = x;}
+        if (y > bottom) bottom = y;
+        //if (this.__topArray[x] === -1) this.__topArray[x] = y;
+        if (x < left)  left = x;
+        if (x > right && x!= this.canvasWidth)  right = x;
       }
 
-      if (i % leftSide == 0 && i) {
+      if (i % leftSide === 0 && i) {
         y++;
         x=0;
       }
       x++;
     }
 
+/*
     x = this.canvasWidth;
     y = this.canvasHeight;
 
     for(var i=totalPixels; i > bottomStartPixel; i-=4) {
       if(imageMap[i] > 0) { 
+        if (top == undefined) top = y;
         if (bottom == undefined) bottom = y;
         if (this.__bottomArray[x] === -1) this.__bottomArray[x] = y;
         if (x < left) { left = x;}
@@ -63,6 +70,7 @@ MaskErSize.prototype = {
       }
       x--;
     }
+    */
 
     this.__setImageRect('top', top);
     this.__setImageRect('bottom', bottom);
@@ -84,9 +92,37 @@ MaskErSize.prototype = {
   displayHandles: function() {
     var coords = this.__buildCoordinates();
     this.__ctx.globalCompositeOperation = 'source-over';
+    this.__ctx.scale(1,1);
+    this.__ctx.strokeStyle="#FF0000";
+
     this.__ctx.beginPath();
     this.__ctx.arc(coords.leftTop.x,coords.leftTop.y,2,0,2*Math.PI);
-    this.__ctx.strokeStyle="#FF0000";
+    this.__ctx.stroke();
+    this.__ctx.beginPath();
+    this.__ctx.arc(coords.leftMiddle.x,coords.leftMiddle.y,2,0,2*Math.PI);
+    this.__ctx.stroke();
+    this.__ctx.beginPath();
+    this.__ctx.arc(coords.leftBottom.x,coords.leftBottom.y,2,0,2*Math.PI);
+    this.__ctx.stroke();
+
+    this.__ctx.beginPath();
+    this.__ctx.arc(coords.centerTop.x,coords.centerTop.y,2,0,2*Math.PI);
+    this.__ctx.stroke();
+    this.__ctx.beginPath();
+    this.__ctx.arc(coords.center.x,coords.center.y,2,0,2*Math.PI);
+    this.__ctx.stroke();
+    this.__ctx.beginPath();
+    this.__ctx.arc(coords.centerBottom.x,coords.centerBottom.y,2,0,2*Math.PI);
+    this.__ctx.stroke();
+
+    this.__ctx.beginPath();
+    this.__ctx.arc(coords.rightTop.x,coords.rightTop.y,2,0,2*Math.PI);
+    this.__ctx.stroke();
+    this.__ctx.beginPath();
+    this.__ctx.arc(coords.rightMiddle.x,coords.rightMiddle.y,2,0,2*Math.PI);
+    this.__ctx.stroke();
+    this.__ctx.beginPath();
+    this.__ctx.arc(coords.rightBottom.x,coords.rightBottom.y,2,0,2*Math.PI);
     this.__ctx.stroke();
   },
 
@@ -100,13 +136,18 @@ MaskErSize.prototype = {
 
     this.__ctx = this.__createCanvas();
 
-    this.__ctx.fillStyle="blue";
     this.__ctx.fillRect(0,0,this.canvasWidth,this.canvasHeight);
 
     this.__ctx.globalCompositeOperation = 'source-in';
 
     this.__ctx.scale(this.__getXScale(), this.__getYScale());
-    this.__ctx.drawImage(imageElement[0], 0, 0);
+
+    /*var images = this.GetImages();
+    var img = new Image();
+    img.src = "/img/" + images[imageId].imageName;
+    this.__ctx.drawImage(image, 1, 1);
+    */
+    this.__ctx.drawImage(imageElement, 1, 1);
 
     return this.__ctx;
   },
@@ -134,11 +175,11 @@ MaskErSize.prototype = {
   },
 
   __getWidth: function() {
-    return this.__getRight() - this.__getLeft();
+    return this.__getRight() - this.__getLeft() + 1;
   },
 
   __getHeight: function() {
-    return this.__getBottom() - this.__getTop();
+    return this.__getBottom() - this.__getTop() + 1;
   },
 
   __setCTXScale: function(ctx) {
@@ -188,7 +229,13 @@ MaskErSize.prototype = {
   },
 
   __setImageRect: function(key, value) {
-    if (key in this.imageRect) this.imageRect[key] = value;
+    if (key in this.imageRect) {
+      if (key === 'top' || key === 'bottom') {
+       this.imageRect[key] = value / this.__getYScale();
+      } else {
+       this.imageRect[key] = value / this.__getXScale();
+      }
+    }
   },
 
   __getLeft: function() { return this.__getImageRect().left; },
@@ -199,21 +246,29 @@ MaskErSize.prototype = {
 
   __getBottom: function() { return this.__getImageRect().bottom; },
 
+  __getVerticalMiddle: function() { return ((this.__getBottom() + this.__getTop()) / 2); },
+
+  __getHorizontalMiddle: function() { return ((this.__getRight() + this.__getLeft()) / 2); },
+
   __getImageRect: function() {
     return this.imageRect;
   },
 
   __buildCoordinates: function() {
+    var verticalMiddle = this.__getVerticalMiddle();
+    var horizontalMiddle = this.__getHorizontalMiddle();
     return {
-      leftTop : {x: this.__getLeft(), y:this.__getTop()},
-      leftMiddle : {x:0, y:0},
-      leftBottom : {x:0, y:0},
-      centerTop : {x:0, y:0},
-      center: {x:0, y:0},
-      centerBottom : {x:0, y:0},
-      rightTop : {x:0, y:0},
-      rightMiddle : {x:0, y:0},
-      rightBottom : {x:0, y:0},
+      leftTop : {x : this.__getLeft(), y : this.__getTop()},
+      leftMiddle : {x : this.__getLeft(), y : verticalMiddle },
+      leftBottom : {x : this.__getLeft(), y : this.__getBottom()},
+
+      centerTop : {x : horizontalMiddle, y : this.__getTop()},
+      center: {x : horizontalMiddle, y : verticalMiddle},
+      centerBottom : {x : horizontalMiddle, y : this.__getBottom()},
+
+      rightTop : {x : this.__getRight(), y : this.__getTop()},
+      rightMiddle : {x : this.__getRight(), y : verticalMiddle },
+      rightBottom : {x : this.__getRight(), y : this.__getBottom()},
     }
   },
 

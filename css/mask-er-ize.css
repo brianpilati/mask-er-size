@@ -1,7 +1,7 @@
 #mask-er-size {
   position: absolute;
   top: 10px;
-  left: 700px;
+  left: 904px;
   border: 1px solid red;
 }
 
@@ -28,7 +28,7 @@
 
 #affects {
   position: absolute;
-  width: 200px;
+  width: 400px;
   height: 35px;
   left: 0px;
   top: 0px;
@@ -37,7 +37,7 @@
 
 #images {
   position: absolute;
-  width: 200px;
+  width: 400px;
   height: 35px;
   left: 0px;
   top: 37px;
@@ -46,7 +46,7 @@
 
 #xScale {
   position: absolute;
-  width: 200px;
+  width: 400px;
   height: 35px;
   left: 0px;
   top: 74px;
@@ -55,7 +55,7 @@
 
 #yScale {
   position: absolute;
-  width: 200px;
+  width: 400px;
   height: 35px;
   left: 0px;
   top: 111px;
@@ -64,7 +64,7 @@
 
 #results {
   position: absolute;
-  width: 200px;
+  width: 400px;
   height: 800px;
   left: 0px;
   top: 160px;
@@ -79,7 +79,7 @@
 
 #image {
   position: absolute;
-  left: 204px;
+  left: 404px;
   top: 0px;
 }
 

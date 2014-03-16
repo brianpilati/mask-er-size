@@ -142,12 +142,7 @@ MaskErSize.prototype = {
 
     this.__ctx.scale(this.__getXScale(), this.__getYScale());
 
-    /*var images = this.GetImages();
-    var img = new Image();
-    img.src = "/img/" + images[imageId].imageName;
-    this.__ctx.drawImage(image, 1, 1);
-    */
-    this.__ctx.drawImage(imageElement, 1, 1);
+    this.__ctx.drawImage(imageElement, 90, 25);
 
     return this.__ctx;
   },

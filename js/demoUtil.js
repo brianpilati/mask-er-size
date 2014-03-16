@@ -16,7 +16,7 @@ DemoUtil.prototype = {
     //this.updateResults(maskErSize.demoMode(ctx));
     //maskErSize.erIt($('#imagesSelect').val());
     //maskErSize.displayHandles();
-    maskErSize.erIt(image);
+    this.updateResults(maskErSize.erIt(image));
     maskErSize.displayHandles();
   },
 
@@ -24,20 +24,22 @@ DemoUtil.prototype = {
     var resultsElem = $('#results');
     resultsElem.html('');
 
-    resultsObj = {
-      'Elasped Time' : results.elapsedTime + ' ms',
-      'Top' : results.rect.top,
-      'Bottom' : results.rect.bottom,
-      'Left' : results.rect.left,
-      'Right' : results.rect.right,
-      'Height' : results.height,
-      'Width' : results.width,
-    };
+    (function display(results, keyValue) {
+      _.each(results, function(value, key) {
+        if(! _.isObject(value)) {
+          if (keyValue) {
+            key = keyValue + key + ': ';
+          } else {
+            key = key + ': ';
+          }
+          resultsElem.append('<div class="result">' + key + value + '</div>');
+        } else {
+          keyValue = key + ': ';
+          display(value, keyValue);
+        }
+      });
+    })(results);
 
-    _.each(resultsObj, function(value, key) {
-      resultsElem.append('<div class="result">' + key + ': ' + value + '</div>');
-
-    });
   },
 
   'addImageToCanvas': function(imageId, element) {
@@ -47,7 +49,9 @@ DemoUtil.prototype = {
     var img = new Image();
     img.src = "/img/" + images[imageId].imageName;
     img.class = "imageSize";
-    ctx.drawImage(img, 0, 0);
+    ctx.drawImage(img, 90, 25);
+    ctx.rect(90,25,img.height,img.width);
+    ctx.stroke();
     return img;
   },
 

@@ -89,41 +89,42 @@ MaskErSize.prototype = {
     return this.__getMaskErSizeObject();
   },
 
+  __displayHandle: function(coord) {
+    this.__ctx.beginPath();
+    this.__ctx.arc(coord.x,coord.y,2,0,2*Math.PI);
+    this.__ctx.fillText(coord.x + "," + coord.y, coord.x - 10, coord.y - 5);
+    this.__ctx.stroke();
+  },
+
   displayHandles: function() {
+
+    /*
+    $('#mask-er-size').bind("mousemove", function(evt) {
+      var left = $(this).css('left').replace("px","");
+      var top = $(this).css('top').replace("px","");
+      currentX = evt.clientX - left;
+      currentY = evt.clientY - top;
+      _.each(coords, function(posObj, posKey) {
+        if (
+            (posObj.x - 5 <= currentX && currentX <= posObj.x + 5)
+            &&
+            (posObj.y - 5 <= currentY && currentY <= posObj.y + 5)
+        ) {
+          console.log("bingo");
+        }
+      });
+    });
+    */
+
     var coords = this.__buildCoordinates();
     this.__ctx.globalCompositeOperation = 'source-over';
     this.__ctx.scale(1,1);
     this.__ctx.strokeStyle="#FF0000";
 
-    this.__ctx.beginPath();
-    this.__ctx.arc(coords.leftTop.x,coords.leftTop.y,2,0,2*Math.PI);
-    this.__ctx.stroke();
-    this.__ctx.beginPath();
-    this.__ctx.arc(coords.leftMiddle.x,coords.leftMiddle.y,2,0,2*Math.PI);
-    this.__ctx.stroke();
-    this.__ctx.beginPath();
-    this.__ctx.arc(coords.leftBottom.x,coords.leftBottom.y,2,0,2*Math.PI);
-    this.__ctx.stroke();
-
-    this.__ctx.beginPath();
-    this.__ctx.arc(coords.centerTop.x,coords.centerTop.y,2,0,2*Math.PI);
-    this.__ctx.stroke();
-    this.__ctx.beginPath();
-    this.__ctx.arc(coords.center.x,coords.center.y,2,0,2*Math.PI);
-    this.__ctx.stroke();
-    this.__ctx.beginPath();
-    this.__ctx.arc(coords.centerBottom.x,coords.centerBottom.y,2,0,2*Math.PI);
-    this.__ctx.stroke();
-
-    this.__ctx.beginPath();
-    this.__ctx.arc(coords.rightTop.x,coords.rightTop.y,2,0,2*Math.PI);
-    this.__ctx.stroke();
-    this.__ctx.beginPath();
-    this.__ctx.arc(coords.rightMiddle.x,coords.rightMiddle.y,2,0,2*Math.PI);
-    this.__ctx.stroke();
-    this.__ctx.beginPath();
-    this.__ctx.arc(coords.rightBottom.x,coords.rightBottom.y,2,0,2*Math.PI);
-    this.__ctx.stroke();
+    var self = this;
+    _.each(coords, function(coordObj) {
+      self.__displayHandle(coordObj);
+    });
   },
 
   __createInitializedArray: function() {
@@ -132,6 +133,7 @@ MaskErSize.prototype = {
 
   __createCGOEffect : function(imageElement) {
     var maskErSizeElem = $('<div id="mask-er-size"></div>');
+
     $('body').append(maskErSizeElem);
 
     this.__ctx = this.__createCanvas();

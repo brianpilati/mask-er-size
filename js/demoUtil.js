@@ -1,5 +1,6 @@
-function DemoUtil() {
+function DemoUtil(isFiddleJs) {
   init: {
+    this.__isFiddleJs = isFiddleJs || false;
     this.Attach();
   }
 
@@ -42,7 +43,7 @@ DemoUtil.prototype = {
     ctx.scale(1, 1);
     var images = this.GetImages();
     var img = new Image();
-    img.src = "/img/" + images[imageId].imageName;
+    img.src = images[imageId].imageSrc;
     img.class = "imageSize";
     ctx.drawImage(img, 90, 25);
     ctx.rect(90,25,img.height,img.width);
@@ -75,7 +76,7 @@ DemoUtil.prototype = {
 
     var images = this.GetImages();
     var img = new Image();
-    img.src = "/img/" + images[imageId].imageName;
+    img.src = images[imageId].imageSrc;
     ctx.drawImage(img, 1, 1);
 
     return ctx;
@@ -91,7 +92,7 @@ DemoUtil.prototype = {
 
   'BuildXScaleSelector' : function() {
     var domElement = $('#xScale');
-    var selectElement = $('<select onChange="DemoUtil.prototype.calculate()" id="xScaleSelect"></select>');
+    var selectElement = $('<select id="xScaleSelect"></select>');
     domElement.append(selectElement);
     var scales = [1, 2, 3, 1/9, 1/4, 1/3, 1/2, 2/3, 3/4];
     _.each(scales, function(scale) {
@@ -101,7 +102,7 @@ DemoUtil.prototype = {
 
   'BuildYScaleSelector' : function() {
     var domElement = $('#yScale');
-    var selectElement = $('<select onChange="DemoUtil.prototype.calculate()" id="yScaleSelect"></select>');
+    var selectElement = $('<select id="yScaleSelect"></select>');
     domElement.append(selectElement);
     var scales = [1, 2, 3, 1/9, 1/4, 1/3, 1/2, 2/3, 3/4];
     _.each(scales, function(scale) {
@@ -111,7 +112,7 @@ DemoUtil.prototype = {
 
   'BuildGCOSelector' : function() {
     var domElement = $('#affects');
-    var selectElement = $('<select onChange="DemoUtil.prototype.calculate()" id="affectsSelect"></select>');
+    var selectElement = $('<select id="affectsSelect"></select>');
     domElement.append(selectElement);
     _.each(this.GetGlobalCompositeOperations(), function(gco) {
       selectElement.append("<option value='" + gco + "'>" + gco + "</option>");
@@ -136,7 +137,7 @@ DemoUtil.prototype = {
 
   'BuildImageSelector' : function() {
     var domElement = $('#images');
-    var selectElement = $('<select onChange="DemoUtil.prototype.calculate()" id="imagesSelect"></select>');
+    var selectElement = $('<select id="imagesSelect"></select>');
     domElement.append(selectElement);
     _.each(this.GetImages(), function(imageObj) {
       selectElement.append("<option value='" + imageObj.index + "'>" + imageObj.imageName + "</option>");
@@ -146,21 +147,41 @@ DemoUtil.prototype = {
   'DisplayImages' : function() {
     var element = $('#displayImages');
     _.each(this.GetImages(), function(imageObj) {
-      element.append('<img id="' + imageObj.index + '" class="imageSize" src="/img/' + imageObj.imageName + '">');
+      element.append('<img id="' + imageObj.index + '" class="imageSize" src="' + imageObj.imageSrc + '">');
     });
   },
 
   'GetImages' : function() {
     var images = new Array();
     var i = 0;
-    images.push({index: i++ , imageName : "batman_jpg.jpg"});
-    images.push({index: i++ , imageName : "batman_gif_transparency.gif"});
-    images.push({index: i++ , imageName : "batman_gif_no_transparency.gif"});
-    images.push({index: i++ , imageName : "batman_svg_transparency.svg"});
-    images.push({index: i++ , imageName : "batman_svg_no_transparency.svg"});
-    images.push({index: i++ , imageName : "batman_png_transparency.png"});
-    images.push({index: i++ , imageName : "batman_png_no_transparency.png"});
+
+    if (this.__isFiddleJs) {
+      var hostName = "https://googledrive.com/host/";
+      images.push({index: i++ , imageName : "Jpeg", imageSrc : hostName + "0BzV0qQebBQxqYXBLSFdhaTA0eTQ"}); 
+      images.push({index: i++ , imageName : "Gif Transparency", imageSrc : hostName + "0BzV0qQebBQxqTjdzTHp2amlRTDQ"});
+      images.push({index: i++ , imageName : "Gif no Transparency", imageSrc : hostName + "0BzV0qQebBQxqaXhUcWdSNWxCQ1E"});
+      images.push({index: i++ , imageName : "SVG Transparency", imageSrc : hostName + "0BzV0qQebBQxqVXh2NUxXNWpCZzA"});
+      images.push({index: i++ , imageName : "SVG No Transparency", imageSrc : hostName + "0BzV0qQebBQxqUTBWd09GVnA1em8"});
+      images.push({index: i++ , imageName : "PNG Transparency", imageSrc : hostName + "0BzV0qQebBQxqNkt0cHpEbkZ2eTQ"});
+      images.push({index: i++ , imageName : "PNG No Transparency", imageSrc : hostName + "0BzV0qQebBQxqV3pVUUJxMFVZOFk"});
+    } else {
+      images.push({index: i++ , imageName : "Jpeg", imageSrc : "/img/batman_jpg.jpg"});
+      images.push({index: i++ , imageName : "Gif Transparency", imageSrc : "/img/batman_gif_transparency.gif"});
+      images.push({index: i++ , imageName : "Gif no Transparency", imageSrc : "/img/batman_gif_no_transparency.gif"});
+      images.push({index: i++ , imageName : "SVG Transparency", imageSrc : "/img/batman_svg_transparency.svg"});
+      images.push({index: i++ , imageName : "SVG No Transparency", imageSrc : "/img/batman_svg_no_transparency.svg"});
+      images.push({index: i++ , imageName : "PNG Transparency", imageSrc : "/img/batman_png_transparency.png"});
+      images.push({index: i++ , imageName : "PNG No Transparency", imageSrc : "/img/batman_png_no_transparency.png"});
+
+    }
     return images;
+  },
+
+  Delegate: function() {
+    var self = this;
+    $(document).delegate("#xScaleSelect, #yScaleSelect, #imagesSelect", "change", function() {
+      self.calculate();
+    });
   },
 
   'Attach' : function() {
@@ -169,5 +190,6 @@ DemoUtil.prototype = {
     this.BuildXScaleSelector();
     this.BuildYScaleSelector();
     this.DisplayImages();
+    this.Delegate();
   }
 };

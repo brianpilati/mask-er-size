@@ -26,16 +26,11 @@ DemoUtil.prototype = {
 
     (function display(results, keyValue) {
       _.each(results, function(value, key) {
-        if(! _.isObject(value)) {
-          if (keyValue) {
-            key = keyValue + key + ': ';
-          } else {
-            key = key + ': ';
-          }
-          resultsElem.append('<div class="result">' + key + value + '</div>');
+        var displayKey = (keyValue) ? keyValue + key + ' -> ' : key + ' -> ';
+        if(_.isObject(value)) {
+          display(value, displayKey);
         } else {
-          keyValue = key + ': ';
-          display(value, keyValue);
+          resultsElem.append('<div class="result">' + displayKey + value + '</div>');
         }
       });
     })(results);

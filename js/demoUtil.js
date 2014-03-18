@@ -41,6 +41,10 @@ DemoUtil.prototype = {
   'addImageToCanvas': function(imageId, element) {
     var ctx = this.createCanvas(element);
     ctx.scale(1, 1);
+    ctx.fillStyle="red";
+    ctx.fillRect(0,0,480,360);
+    ctx.stroke();
+    ctx.globalCompositeOperation = 'source-over';
     var images = this.GetImages();
     var img = new Image();
     img.crossOrigin = '';

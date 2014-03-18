@@ -8,17 +8,15 @@ function DemoUtil(isFiddleJs) {
 
 DemoUtil.prototype = {
   'calculate' : function() {
+    var self = this;
     var image = this.addImageToCanvas($('#imagesSelect').val(), 'image');
-    //this.createGCOEffect($('#affectsSelect').val(), $('#imagesSelect').val(), 'composite');
-    //var ctx = this.createGCOEffect('source-in', $('#imagesSelect').val(), 'maskErSize');
-    var xScale = $('#xScaleSelect').val();
-    var yScale = $('#yScaleSelect').val();
-    var maskErSize = new MaskErSize(480, 360, xScale, yScale);
-    //this.updateResults(maskErSize.demoMode(ctx));
-    //maskErSize.erIt($('#imagesSelect').val());
-    //maskErSize.displayHandles();
-    this.updateResults(maskErSize.erIt(image));
-    maskErSize.displayHandles();
+    $(image).load(function() {
+      var xScale = $('#xScaleSelect').val();
+      var yScale = $('#yScaleSelect').val();
+      var maskErSize = new MaskErSize(480, 360, xScale, yScale);
+      self.updateResults(maskErSize.erIt(this));
+      maskErSize.displayHandles();
+    });
   },
 
   'updateResults' : function(results) {
@@ -45,43 +43,10 @@ DemoUtil.prototype = {
     var img = new Image();
     img.crossOrigin = '';
     img.src = images[imageId].imageSrc;
-    img.class = "imageSize";
     ctx.drawImage(img, 90, 25);
     ctx.rect(90,25,img.height,img.width);
     ctx.stroke();
     return img;
-  },
-
-/*
-  'addImageToCanvas' : function(imageId, element) {
-    var ctx = this.createCanvas(element);
-    var imageElement = $('#' +  imageId)[0];
-    console.log(imageElement);
-    ctx.scale(1, 1);
-    ctx.drawImage(imageElement, 0, 0);
-
-    return ctx;
-  },
-  */
-
-  'createGCOEffect' : function(effect, imageId, element) {
-    var ctx = this.createCanvas(element);
-    //var imageElement = $('#' +  imageId)[0];
-
-    ctx.fillStyle="blue";
-    ctx.fillRect(0,0,480,360);
-
-    ctx.globalCompositeOperation=effect;
-
-    ctx.scale(1, 1);
-
-    var images = this.GetImages();
-    var img = new Image();
-    img.crossOrigin = '';
-    img.src = images[imageId].imageSrc;
-    ctx.drawImage(img, 1, 1);
-
-    return ctx;
   },
 
   'createCanvas' : function(element) {
@@ -112,44 +77,12 @@ DemoUtil.prototype = {
     });
   },
 
-  'BuildGCOSelector' : function() {
-    var domElement = $('#affects');
-    var selectElement = $('<select id="affectsSelect"></select>');
-    domElement.append(selectElement);
-    _.each(this.GetGlobalCompositeOperations(), function(gco) {
-      selectElement.append("<option value='" + gco + "'>" + gco + "</option>");
-    });
-  },
-
-  'GetGlobalCompositeOperations' : function() {
-    var gco = new Array();
-    gco.push("source-atop");
-    gco.push("source-in");
-    gco.push("source-out");
-    gco.push("source-over");
-    gco.push("destination-atop");
-    gco.push("destination-in");
-    gco.push("destination-out");
-    gco.push("destination-over");
-    gco.push("lighter");
-    gco.push("copy");
-    gco.push("xor");
-    return gco;
-  },
-
   'BuildImageSelector' : function() {
     var domElement = $('#images');
     var selectElement = $('<select id="imagesSelect"></select>');
     domElement.append(selectElement);
     _.each(this.GetImages(), function(imageObj) {
       selectElement.append("<option value='" + imageObj.index + "'>" + imageObj.imageName + "</option>");
-    });
-  },
-
-  'DisplayImages' : function() {
-    var element = $('#displayImages');
-    _.each(this.GetImages(), function(imageObj) {
-      element.append('<img id="' + imageObj.index + '" class="imageSize" src="' + imageObj.imageSrc + '">');
     });
   },
 
@@ -187,11 +120,9 @@ DemoUtil.prototype = {
   },
 
   'Attach' : function() {
-    this.BuildGCOSelector();
     this.BuildImageSelector();
     this.BuildXScaleSelector();
     this.BuildYScaleSelector();
-    this.DisplayImages();
     this.Delegate();
   }
 };

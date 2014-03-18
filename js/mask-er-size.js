@@ -20,26 +20,16 @@ MaskErSize.prototype = {
     var imageMapObject = ctx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
     var imageMap = imageMapObject.data;
 
-    //var top = bottom = undefined;
-    //var right = y = x = 0;
     var top = undefined;
     var right = bottom = y = x = 0;
     var left = this.canvasWidth; 
 
     var leftSide = this.canvasWidth * 4;
-    //var totalPixels = imageMap.length - 1;
     var totalPixels = imageMap.length;
-    var topEndPixel = imageMap.length/2;
-    var bottomStartPixel = topEndPixel + 4;
-    /*
-      calculate the top
-    */
-    //for(var i=0; i< topEndPixel; i+=4) {
     for(var i=0; i< totalPixels; i+=4) {
       if(imageMap[i+3] > 0) { 
         if (top == undefined) top = y;
         if (y > bottom) bottom = y;
-        //if (this.__topArray[x] === -1) this.__topArray[x] = y;
         if (x < left)  left = x;
         if (x > right && x!= this.canvasWidth)  right = x;
       }
@@ -51,39 +41,10 @@ MaskErSize.prototype = {
       x++;
     }
 
-/*
-    x = this.canvasWidth;
-    y = this.canvasHeight;
-
-    for(var i=totalPixels; i > bottomStartPixel; i-=4) {
-      if(imageMap[i] > 0) { 
-        if (top == undefined) top = y;
-        if (bottom == undefined) bottom = y;
-        if (this.__bottomArray[x] === -1) this.__bottomArray[x] = y;
-        if (x < left) { left = x;}
-        if (x > right) { right = x;}
-      }
-
-      if (i % leftSide == 3) {
-        y--;
-        x = this.canvasWidth;
-      }
-      x--;
-    }
-    */
-
     this.__setImageRect('top', top);
     this.__setImageRect('bottom', bottom);
     this.__setImageRect('left', left);
     this.__setImageRect('right', right);
-
-    /*
-      imageMapObject.data = imageMap;
-      ctx.putImageData(imageMapObject, 0, 0);
-
-      //DrawLine
-      this.__drawDebugLines(ctx);
-    */
 
     this.__endTime = new Date();
     return this.__getMaskErSizeObject();
@@ -97,25 +58,6 @@ MaskErSize.prototype = {
   },
 
   displayHandles: function() {
-
-    /*
-    $('#mask-er-size').bind("mousemove", function(evt) {
-      var left = $(this).css('left').replace("px","");
-      var top = $(this).css('top').replace("px","");
-      currentX = evt.clientX - left;
-      currentY = evt.clientY - top;
-      _.each(coords, function(posObj, posKey) {
-        if (
-            (posObj.x - 5 <= currentX && currentX <= posObj.x + 5)
-            &&
-            (posObj.y - 5 <= currentY && currentY <= posObj.y + 5)
-        ) {
-          console.log("bingo");
-        }
-      });
-    });
-    */
-
     var coords = this.__buildCoordinates();
     this.__ctx.globalCompositeOperation = 'source-over';
     this.__ctx.scale(1,1);
@@ -125,10 +67,6 @@ MaskErSize.prototype = {
     _.each(coords, function(coordObj) {
       self.__displayHandle(coordObj);
     });
-  },
-
-  __createInitializedArray: function() {
-    return Array.apply(null, new Array(this.canvasWidth)).map(Number.prototype.valueOf,-1);
   },
 
   __createCGOEffect : function(imageElement) {
@@ -189,40 +127,6 @@ MaskErSize.prototype = {
 
   __getYScale: function() {
     return this.yScale;
-  },
-
-  __drawDebugLines: function(ctx) {
-    ctx.globalCompositeOperation='destination-over';
-    this.__setCTXScale(ctx);
-
-    this.__drawTopDebugLine(ctx);
-    this.__drawBottomDebugLine(ctx);
-    this.__drawLeftDebugLine(ctx);
-    this.__drawRightDebugLine(ctx);
-  },
-
-  __drawTopDebugLine: function(ctx) {
-    ctx.moveTo(0,this.__getImageRect().top);
-    ctx.lineTo(this.canvasWidth,this.__getImageRect().top);
-    ctx.stroke();
-  },
-
-  __drawBottomDebugLine: function(ctx) {
-    ctx.moveTo(0,this.__getImageRect().bottom);
-    ctx.lineTo(this.canvasWidth, this.__getImageRect().bottom);
-    ctx.stroke();
-  },
-
-  __drawLeftDebugLine: function(ctx) {
-    ctx.moveTo(this.__getImageRect().left,0);
-    ctx.lineTo(this.__getImageRect().left,this.canvasHeight);
-    ctx.stroke();
-  },
-
-  __drawRightDebugLine: function(ctx) {
-    ctx.moveTo(this.__getImageRect().right,0);
-    ctx.lineTo(this.__getImageRect().right,this.canvasHeight);
-    ctx.stroke();
   },
 
   __setImageRect: function(key, value) {
@@ -287,62 +191,9 @@ MaskErSize.prototype = {
     }
   },
 
-  demoMode: function(ctx) {
-    this.__startTime = new Date();
-    var aDataObj = ctx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
-    var aData = aDataObj.data;
-    var top = undefined;
-    var right = 0;
-    var left = this.canvasWidth; 
-    var bottom = 0; 
-    var y = 0;
-    var x = 0;
-    var leftSide = (this.canvasWidth*4);
-    for(var i=0; i< aData.length; i+=4) {
-      if(aData[i+3] > 0) { 
-        if (top == undefined) { top = y;}
-        if ( y > bottom ) bottom = y;
-        if ( x < left ) left = x;
-        if ( x > right ) right = x;
-
-        aData[i] = 0;
-        aData[i+1] = 0;
-        aData[i+2] = 0;
-        aData[i+3] = 255;
-      } else {
-        aData[i] = 255;
-        aData[i+1] = 255;
-        aData[i+2] = 255;
-        aData[i+3] = aData[i+3];
-      }
-
-      if (i % leftSide === 0) {
-        y++;
-        x=0;
-      }
-      x++;
-    }
-
-    this.__setImageRect('top', top);
-    this.__setImageRect('bottom', bottom);
-    this.__setImageRect('left', left);
-    this.__setImageRect('right', right);
-
-    aDataObj.data = aData;
-    ctx.putImageData(aDataObj, 0, 0);
-
-    //DrawLine
-    this.__drawDebugLines(ctx);
-
-    this.__endTime = new Date();
-    return this.__getMaskErSizeObject();
-  },
-
   initializeVariables: function() {
     this.__startTime = null;
     this.__endTime = null;
-    this.__topArray = this.__createInitializedArray();
-    this.__bottomArray  = this.__createInitializedArray();
     this.__ctx = undefined;
     this.imageRect = {
       top : 0,

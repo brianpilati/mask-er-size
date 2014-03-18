@@ -5,18 +5,6 @@
   border: 1px solid red;
 }
 
-.imageSize {
-  visibility: show;
-  height: 300px;
-  border: 1px solid red;
-}
-
-.canvas {
-  border:1px solid #d3d3d3;
-  margin-right:10px;
-  margin-bottom:20px; 
-}
-
 #layout {
   position: absolute;
   width: 1700px;
@@ -26,7 +14,7 @@
   border: 1px solid black;
 }
 
-#affects {
+#images {
   position: absolute;
   width: 400px;
   height: 35px;
@@ -35,7 +23,7 @@
   border: 1px solid black;
 }
 
-#images {
+#xScale {
   position: absolute;
   width: 400px;
   height: 35px;
@@ -44,7 +32,7 @@
   border: 1px solid black;
 }
 
-#xScale {
+#yScale {
   position: absolute;
   width: 400px;
   height: 35px;
@@ -53,21 +41,18 @@
   border: 1px solid black;
 }
 
-#yScale {
-  position: absolute;
-  width: 400px;
-  height: 35px;
-  left: 0px;
-  top: 111px;
-  border: 1px solid black;
-}
-
 #results {
   position: absolute;
   width: 400px;
   height: 800px;
   left: 0px;
-  top: 160px;
+  top: 111px;
+  border: 1px solid black;
+}
+
+.canvasSize {
+  width: 480px;
+  height: 360px;
   border: 1px solid black;
 }
 
@@ -81,25 +66,4 @@
   position: absolute;
   left: 404px;
   top: 0px;
-}
-
-#maskErSize {
-  position: absolute;
-  left: 690px;
-  top: 0px;
-}
-
-.canvasSize {
-  width: 480px;
-  height: 360px;
-  border: 1px solid black;
-}
-
-#displayImages {
-  position: absolute;
-  width: 800px;
-  height: 400px;
-  left: 204px;
-  top: 364px;
-  border: 1px solid black;
 }

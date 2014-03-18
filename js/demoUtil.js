@@ -43,6 +43,7 @@ DemoUtil.prototype = {
     ctx.scale(1, 1);
     var images = this.GetImages();
     var img = new Image();
+    img.crossOrigin = '';
     img.src = images[imageId].imageSrc;
     img.class = "imageSize";
     ctx.drawImage(img, 90, 25);
@@ -76,6 +77,7 @@ DemoUtil.prototype = {
 
     var images = this.GetImages();
     var img = new Image();
+    img.crossOrigin = '';
     img.src = images[imageId].imageSrc;
     ctx.drawImage(img, 1, 1);
 
